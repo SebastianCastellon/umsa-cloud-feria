@@ -3,7 +3,7 @@
 // ============================================
 // URL del backend en Render (actualizar después del despliegue)
 // Mientras pruebas local, usa localhost
-const API_URL = 'https://umsa-cloud-feria.onrender.com/';  // ← Cambiar por tu URL de Render
+const API_URL = 'https://umsa-cloud-feria.onrender.com'; // ← Cambiar por tu URL de Render
 
 // ============================================
 // FUNCIÓN PRINCIPAL - BUSCAR ESTUDIANTE

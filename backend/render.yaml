@@ -1,0 +1,18 @@
+services:
+  - type: web
+    name: umsa-cloud-api
+    runtime: node
+    repo: https://github.com/TU_USUARIO/umsa-cloud-feria
+    plan: free
+    envVars:
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_ANON_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        value: https://umsa-feria.netlify.app
+      - key: NODE_ENV
+        value: production
+    buildCommand: npm install
+    startCommand: node app.js
+    autoDeploy: true

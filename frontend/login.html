@@ -6,7 +6,6 @@
     <title>Login - UMSA Cloud</title>
     <link rel="stylesheet" href="style.css">
     <style>
-        /* Estilos específicos para login */
         .login-container {
             min-height: 100vh;
             display: flex;
@@ -148,63 +147,102 @@
             </form>
             
             <div class="info-demo">
-                <p><strong>📋 Cuentas de demostración:</strong></p>
-                <p><strong>Admin:</strong> admin / admin123</p>
-                <p><strong>Estudiante:</strong> abigail / umsa2026</p>
-                <p><strong>Estudiante:</strong> demo / demo123</p>
+                <p><strong>📋 Cuentas disponibles:</strong></p>
+                <p><strong>sebastian</strong> (admin) / sebas123</p>
+                <p><strong>abigail</strong> (estudiante) / abigail123</p>
+                <p><strong>beymar</strong> (estudiante) / beymar123</p>
                 <hr>
-                <p style="font-size: 11px;">🔒 Sistema seguro con estándares ISO 27001</p>
+                <p style="font-size: 11px;">🔒 Sistema con estándares ISO 27001</p>
+                <p style="font-size: 11px;">👑 Admin puede agregar nuevos estudiantes</p>
             </div>
         </div>
     </div>
     
     <script>
-        // USUARIOS PREDEFINIDOS (simulados, sin base de datos)
-        const usuarios = {
-            // Super usuario / Admin
-            "admin": {
-                password: "admin123",
-                nombre: "Administrador UMSA",
-                rol: "admin",
-                carnet: null
-            },
-            // Estudiantes normales
-            "abigail": {
-                password: "umsa2026",
-                nombre: "Abigail Goytia",
-                rol: "estudiante",
-                carnet: "10018381"
-            },
-            "demo": {
-                password: "demo123",
-                nombre: "Usuario Demo",
-                rol: "estudiante",
-                carnet: "1794688"
-            }
-        };
+        // ============================================
+        // INICIALIZAR USUARIOS (se guardan en localStorage)
+        // ============================================
         
+        function inicializarUsuarios() {
+            const usuariosGuardados = localStorage.getItem('umsa_usuarios');
+            
+            if (!usuariosGuardados) {
+                // Usuarios iniciales
+                const usuariosIniciales = {
+                    "sebastian": {
+                        password: "sebas123",
+                        nombre: "Sebastian Dennis Castellon Gutierrez",
+                        rol: "admin",
+                        carnet: "14153644",
+                        notas: {
+                            "Información en la Nube SIS-372": 95,
+                            "Programación Avanzada": 92,
+                            "Bases de Datos": 98,
+                            "Redes de Computadoras": 94
+                        },
+                        asistencia: 96,
+                        carrera: "Informática"
+                    },
+                    "abigail": {
+                        password: "abigail123",
+                        nombre: "Abigail Marcia Goytia Aquise",
+                        rol: "estudiante",
+                        carnet: "10018381",
+                        notas: {
+                            "Información en la Nube SIS-372": 92,
+                            "Programación Avanzada": 88,
+                            "Bases de Datos": 95,
+                            "Redes de Computadoras": 90
+                        },
+                        asistencia: 95,
+                        carrera: "Informática"
+                    },
+                    "beymar": {
+                        password: "beymar123",
+                        nombre: "Beymar Jorge Apaza Carpio",
+                        rol: "estudiante",
+                        carnet: "0000000",
+                        notas: {
+                            "Información en la Nube SIS-372": 89,
+                            "Programación Avanzada": 91,
+                            "Bases de Datos": 87,
+                            "Redes de Computadoras": 88
+                        },
+                        asistencia: 91,
+                        carrera: "Informática"
+                    }
+                };
+                localStorage.setItem('umsa_usuarios', JSON.stringify(usuariosIniciales));
+            }
+        }
+        
+        // Ejecutar al cargar
+        inicializarUsuarios();
+        
+        // Login
         document.getElementById('loginForm').addEventListener('submit', (e) => {
             e.preventDefault();
             
-            const username = document.getElementById('username').value.trim();
+            const username = document.getElementById('username').value.trim().toLowerCase();
             const password = document.getElementById('password').value;
             const errorDiv = document.getElementById('errorMsg');
             
-            // Verificar credenciales
+            const usuarios = JSON.parse(localStorage.getItem('umsa_usuarios'));
             const user = usuarios[username];
             
             if (user && user.password === password) {
-                // Guardar sesión en localStorage
+                // Guardar sesión
                 const sessionData = {
                     username: username,
                     nombre: user.nombre,
                     rol: user.rol,
                     carnet: user.carnet,
+                    notas: user.notas,
+                    asistencia: user.asistencia,
+                    carrera: user.carrera,
                     loginTime: new Date().toISOString()
                 };
                 localStorage.setItem('umsa_session', JSON.stringify(sessionData));
-                
-                // Redirigir al sistema principal
                 window.location.href = 'index.html';
             } else {
                 errorDiv.style.display = 'block';

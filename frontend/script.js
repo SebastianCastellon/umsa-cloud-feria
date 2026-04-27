@@ -47,6 +47,6 @@ async function cargarInfoISO() {
 
 // Inicializar
 document.addEventListener('DOMContentLoaded', () => {
-    console.log('🏛️ UMSA Cloud - Sistema Académico');
+    console.log('🏛️ UMSA Cloud - Sistema Académico con Historial');
     cargarInfoISO();
 });

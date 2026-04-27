@@ -74,23 +74,232 @@
             text-align: center;
             margin-bottom: 25px;
         }
+        
+        /* Estilos para récord académico */
+        .record-section {
+            background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+            border-radius: 16px;
+            padding: 20px;
+            margin-bottom: 25px;
+        }
+        .record-section h4 {
+            color: #1a3e6f;
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+            border-left: 4px solid #c9a03d;
+            padding-left: 12px;
+        }
+        .record-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+        .record-item {
+            text-align: center;
+            padding: 15px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            transition: transform 0.2s;
+        }
+        .record-item:hover {
+            transform: translateY(-3px);
+        }
+        .record-icon {
+            font-size: 28px;
+            margin-bottom: 8px;
+        }
+        .record-value {
+            font-size: 24px;
+            font-weight: bold;
+            color: #1a3e6f;
+        }
+        .record-label {
+            font-size: 12px;
+            color: #666;
+            margin-top: 5px;
+        }
+        .semestre-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 15px;
+            overflow: hidden;
+        }
+        .semestre-header {
+            background: #1a3e6f;
+            color: white;
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .periodo {
+            background: rgba(255,255,255,0.2);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+        }
+        .materias-list {
+            padding: 15px;
+        }
+        .materia-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            border-bottom: 1px solid #e0e0e0;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .estado-aprobado {
+            background: #d4edda;
+            color: #155724;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .estado-reprobado {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        .estado-curso {
+            background: #fff3cd;
+            color: #856404;
+            padding: 3px 10px;
+            border-radius: 15px;
+            font-size: 11px;
+            font-weight: bold;
+        }
+        @media (max-width: 768px) {
+            .record-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .materia-item {
+                flex-direction: column;
+                text-align: center;
+            }
+            .semestre-header {
+                flex-direction: column;
+                gap: 5px;
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
-    <!-- Script de verificación de sesión -->
     <script>
-        // Verificar si hay sesión activa
+        // INICIALIZAR DATOS SI ES NECESARIO
+        async function inicializarDatos() {
+            const usuariosGuardados = localStorage.getItem('umsa_usuarios');
+            
+            if (!usuariosGuardados) {
+                // Datos completos de los estudiantes
+                const usuariosIniciales = {
+                    "sebastian": {
+                        password: "sebas123",
+                        nombre: "Sebastian Dennis Castellon Gutierrez",
+                        rol: "admin",
+                        carnet: "14153644",
+                        semestre_actual: 8,
+                        creditos_aprobados: 180,
+                        materias_aprobadas: 32,
+                        materias_reprobadas: 2,
+                        promedio_general: 86.5,
+                        historial: [
+                            { semestre: 1, periodo: "2021-1", materias: [{ nombre: "Introducción a la Informática", nota: 85, estado: "Aprobado", creditos: 4 }] },
+                            { semestre: 2, periodo: "2021-2", materias: [{ nombre: "Programación I", nota: 88, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 3, periodo: "2022-1", materias: [{ nombre: "Programación II", nota: 92, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 4, periodo: "2022-2", materias: [{ nombre: "Bases de Datos I", nota: 95, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 5, periodo: "2023-1", materias: [{ nombre: "Bases de Datos II", nota: 92, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 6, periodo: "2023-2", materias: [{ nombre: "Programación Web", nota: 96, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 7, periodo: "2024-1", materias: [{ nombre: "Aplicaciones Móviles", nota: 94, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 8, periodo: "2024-2", materias: [{ nombre: "Información en la Nube SIS-372", nota: 95, estado: "En curso", creditos: 4 }] }
+                        ]
+                    },
+                    "abigail": {
+                        password: "abigail123",
+                        nombre: "Abigail Marcia Goytia Aquise",
+                        rol: "estudiante",
+                        carnet: "10018381",
+                        semestre_actual: 8,
+                        creditos_aprobados: 175,
+                        materias_aprobadas: 31,
+                        materias_reprobadas: 1,
+                        promedio_general: 89.2,
+                        historial: [
+                            { semestre: 1, periodo: "2021-1", materias: [{ nombre: "Introducción a la Informática", nota: 88, estado: "Aprobado", creditos: 4 }, { nombre: "Matemática Básica", nota: 82, estado: "Aprobado", creditos: 4 }] },
+                            { semestre: 2, periodo: "2021-2", materias: [{ nombre: "Programación I", nota: 91, estado: "Aprobado", creditos: 5 }, { nombre: "Álgebra Lineal", nota: 78, estado: "Aprobado", creditos: 4 }] },
+                            { semestre: 3, periodo: "2022-1", materias: [{ nombre: "Programación II", nota: 95, estado: "Aprobado", creditos: 5 }, { nombre: "Estructura de Datos", nota: 92, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 4, periodo: "2022-2", materias: [{ nombre: "Bases de Datos I", nota: 96, estado: "Aprobado", creditos: 5 }, { nombre: "Sistemas Operativos", nota: 88, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 5, periodo: "2023-1", materias: [{ nombre: "Bases de Datos II", nota: 95, estado: "Aprobado", creditos: 5 }, { nombre: "Ingeniería de Software", nota: 90, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 6, periodo: "2023-2", materias: [{ nombre: "Programación Web", nota: 98, estado: "Aprobado", creditos: 5 }, { nombre: "Inteligencia Artificial", nota: 92, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 7, periodo: "2024-1", materias: [{ nombre: "Aplicaciones Móviles", nota: 96, estado: "Aprobado", creditos: 5 }, { nombre: "Seguridad Informática", nota: 91, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 8, periodo: "2024-2", materias: [{ nombre: "Información en la Nube SIS-372", nota: 92, estado: "En curso", creditos: 4 }, { nombre: "Programación Avanzada", nota: 88, estado: "En curso", creditos: 5 }] }
+                        ]
+                    },
+                    "beymar": {
+                        password: "beymar123",
+                        nombre: "Beymar Jorge Apaza Carpio",
+                        rol: "estudiante",
+                        carnet: "0000000",
+                        semestre_actual: 7,
+                        creditos_aprobados: 165,
+                        materias_aprobadas: 29,
+                        materias_reprobadas: 3,
+                        promedio_general: 84.3,
+                        historial: [
+                            { semestre: 1, periodo: "2021-1", materias: [{ nombre: "Introducción a la Informática", nota: 82, estado: "Aprobado", creditos: 4 }, { nombre: "Matemática Básica", nota: 75, estado: "Aprobado", creditos: 4 }] },
+                            { semestre: 2, periodo: "2021-2", materias: [{ nombre: "Programación I", nota: 88, estado: "Aprobado", creditos: 5 }, { nombre: "Álgebra Lineal", nota: 70, estado: "Aprobado", creditos: 4 }] },
+                            { semestre: 3, periodo: "2022-1", materias: [{ nombre: "Programación II", nota: 90, estado: "Aprobado", creditos: 5 }, { nombre: "Estructura de Datos", nota: 85, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 4, periodo: "2022-2", materias: [{ nombre: "Bases de Datos I", nota: 89, estado: "Aprobado", creditos: 5 }, { nombre: "Sistemas Operativos", nota: 82, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 5, periodo: "2023-1", materias: [{ nombre: "Bases de Datos II", nota: 91, estado: "Aprobado", creditos: 5 }, { nombre: "Ingeniería de Software", nota: 86, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 6, periodo: "2023-2", materias: [{ nombre: "Programación Web", nota: 92, estado: "Aprobado", creditos: 5 }, { nombre: "Inteligencia Artificial", nota: 87, estado: "Aprobado", creditos: 5 }] },
+                            { semestre: 7, periodo: "2024-1", materias: [{ nombre: "Aplicaciones Móviles", nota: 90, estado: "Aprobado", creditos: 5 }, { nombre: "Computación en la Nube", nota: 89, estado: "Aprobado", creditos: 5 }] }
+                        ]
+                    }
+                };
+                localStorage.setItem('umsa_usuarios', JSON.stringify(usuariosIniciales));
+            }
+        }
+        
+        inicializarDatos();
+        
+        // Verificar sesión
         const session = localStorage.getItem('umsa_session');
         if (!session) {
             window.location.href = 'login.html';
         }
         
-        const userData = JSON.parse(session);
+        let userData = JSON.parse(session);
+        
+        // Verificar si los datos del usuario tienen historial
+        const usuarios = JSON.parse(localStorage.getItem('umsa_usuarios'));
+        const userFullData = usuarios[userData.username];
+        
+        if (userFullData && userFullData.historial && !userData.historial) {
+            // Actualizar sesión con datos completos
+            userData = {
+                ...userData,
+                historial: userFullData.historial,
+                semestre_actual: userFullData.semestre_actual,
+                creditos_aprobados: userFullData.creditos_aprobados,
+                materias_aprobadas: userFullData.materias_aprobadas,
+                materias_reprobadas: userFullData.materias_reprobadas,
+                promedio_general: userFullData.promedio_general
+            };
+            localStorage.setItem('umsa_session', JSON.stringify(userData));
+        }
+        
         console.log('✅ Usuario autenticado:', userData.nombre);
         console.log('✅ Rol:', userData.rol);
     </script>
 
-    <!-- Header con logo UMSA -->
+    <!-- Header -->
     <div class="header">
         <div class="header-content">
             <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Escudo_UMSA.svg/1200px-Escudo_UMSA.svg.png" alt="Escudo UMSA" class="logo-umsa">
@@ -106,9 +315,7 @@
         <!-- Barra de usuario -->
         <div class="user-bar">
             <div class="user-info">
-                <div class="user-avatar">
-                    👤
-                </div>
+                <div class="user-avatar">👤</div>
                 <div class="user-details">
                     <h3 id="userName"></h3>
                     <p id="userRole"></p>
@@ -122,14 +329,13 @@
         </div>
 
         <script>
-            // Cargar datos del usuario
+            // Cargar datos del usuario en la interfaz
             const sessionData = JSON.parse(localStorage.getItem('umsa_session'));
             if (sessionData) {
                 document.getElementById('userName').textContent = sessionData.nombre;
                 document.getElementById('userRole').textContent = sessionData.rol === 'admin' ? '👑 Administrador' : '🎓 Estudiante';
                 document.getElementById('userCarnet').innerHTML = `📄 Carnet: ${sessionData.carnet}`;
                 
-                // Mostrar link de admin solo si es admin
                 if (sessionData.rol === 'admin') {
                     document.getElementById('adminLink').style.display = 'inline-block';
                 }
@@ -141,40 +347,37 @@
             }
         </script>
 
-        <!-- Tarjeta de bienvenida personalizada -->
+        <!-- Tarjeta de bienvenida -->
         <div class="card welcome-section">
             <h2>🎓 Bienvenido al Sistema Académico UMSA Cloud</h2>
-            <p>Consulta tus notas, asistencia y rendimiento académico en tiempo real desde la nube.</p>
+            <p>Consulta tu historial académico, récord de notas y rendimiento en la nube.</p>
         </div>
 
-        <!-- Tarjeta de consulta (solo para estudiantes) -->
+        <!-- Botón para ver historial -->
         <div id="studentPanel" class="card search-card">
-            <div class="card-icon">🔍</div>
-            <h2>Consulta tus Notas</h2>
-            <p class="card-description">Tus datos académicos se cargan automáticamente desde la nube</p>
-            
+            <div class="card-icon">📚</div>
+            <h2>Mi Historial Académico</h2>
+            <p class="card-description">Revisa tu récord académico, materias aprobadas y rendimiento por semestre</p>
             <div style="text-align: center; margin-top: 20px;">
-                <button onclick="cargarMisNotas()" style="background: #1a3e6f; color:white; padding: 12px 30px; border:none; border-radius: 10px; cursor:pointer; font-size:16px;">
-                    📊 Ver mis notas
+                <button onclick="cargarHistorial()" style="background: #1a3e6f; color:white; padding: 12px 30px; border:none; border-radius: 10px; cursor:pointer; font-size:16px;">
+                    📊 Ver mi Historial Académico
                 </button>
             </div>
         </div>
 
-        <!-- Panel de administración (solo visible para admin) -->
+        <!-- Panel de administración -->
         <div id="adminPanel" class="card" style="display: none;">
             <h2>👑 Panel de Administración</h2>
             <p>Gestiona los estudiantes del sistema</p>
             <div style="margin-top: 20px;">
-                <a href="admin.html" style="background: #c9a03d; color:#1a3e6f; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">
-                    ✚ Ir a Gestión de Estudiantes
-                </a>
+                <a href="admin.html" class="btn-admin" style="background:#c9a03d; padding:10px 20px; text-decoration:none; border-radius:8px;">✚ Ir a Gestión de Estudiantes</a>
             </div>
         </div>
 
         <!-- Resultados -->
         <div id="results" class="results" style="display: none;"></div>
 
-        <!-- Sección de seguridad ISO -->
+        <!-- Seguridad ISO -->
         <div class="card iso-card">
             <h2>🛡️ Seguridad de la Información</h2>
             <p class="iso-subtitle">Estándares Internacionales Implementados</p>
@@ -198,7 +401,7 @@
     <script src="script.js"></script>
     
     <script>
-        // Mostrar/ocultar paneles según rol
+        // Mostrar/ocultar paneles
         if (sessionData && sessionData.rol === 'admin') {
             document.getElementById('adminPanel').style.display = 'block';
             document.getElementById('studentPanel').style.display = 'none';
@@ -207,137 +410,133 @@
             document.getElementById('studentPanel').style.display = 'block';
         }
         
-        // Función para cargar notas del estudiante logueado
-        async function cargarMisNotas() {
+        // Función principal para cargar historial
+        function cargarHistorial() {
             const resultsDiv = document.getElementById('results');
             resultsDiv.style.display = 'block';
-            resultsDiv.innerHTML = `<div class="loading-spinner">🔄 Cargando tus notas desde la nube...</div>`;
+            resultsDiv.innerHTML = `<div class="loading-spinner">🔄 Cargando tu historial académico desde la nube...</div>`;
             
-            // Simular carga de datos (usando datos de la sesión)
             setTimeout(() => {
-                const estudiante = {
-                    nombre: sessionData.nombre,
-                    carrera: sessionData.carrera || "Informática",
-                    asistencia: sessionData.asistencia || 90,
-                    notas: sessionData.notas || {}
-                };
+                const estudiante = JSON.parse(localStorage.getItem('umsa_session'));
                 
-                mostrarResultadosPropios(estudiante, sessionData.carnet);
-            }, 500);
+                if (!estudiante || !estudiante.historial) {
+                    resultsDiv.innerHTML = `<div class="error-message">❌ Error: No se encontró historial académico. Contacte al administrador.</div>`;
+                    return;
+                }
+                
+                mostrarHistorial(estudiante);
+            }, 300);
         }
         
-        function mostrarResultadosPropios(estudiante, id) {
-    const resultsDiv = document.getElementById('results');
-    
-    // Calcular estadísticas del historial
-    let totalCreditosAprobados = 0;
-    let totalMateriasAprobadas = 0;
-    let todasNotas = [];
-    
-    estudiante.historial.forEach(sem => {
-        sem.materias.forEach(materia => {
-            if (materia.estado === "Aprobado") {
-                totalCreditosAprobados += materia.creditos;
-                totalMateriasAprobadas++;
-                todasNotas.push(materia.nota);
-            }
-        });
-    });
-    
-    const promedioGeneral = (todasNotas.reduce((a,b) => a+b, 0) / todasNotas.length).toFixed(1);
-    
-    // Generar HTML del historial por semestre
-    let historialHTML = '';
-    estudiante.historial.forEach(sem => {
-        let materiasHTML = '';
-        sem.materias.forEach(materia => {
-            let estadoClass = materia.estado === "Aprobado" ? "estado-aprobado" : (materia.estado === "Reprobado" ? "estado-reprobado" : "estado-curso");
-            let notaColor = materia.nota >= 85 ? "nota-buena" : (materia.nota >= 70 ? "nota-regular" : "nota-mala");
+        function mostrarHistorial(estudiante) {
+            const resultsDiv = document.getElementById('results');
             
-            materiasHTML += `
-                <div class="materia-item">
-                    <span>📖 ${materia.nombre}</span>
-                    <div style="text-align: right;">
-                        <span class="${notaColor}"><strong>${materia.nota}</strong> pts</span>
-                        <span class="${estadoClass}" style="margin-left: 15px;">${materia.estado}</span>
-                        <span style="margin-left: 10px; font-size: 12px; color: #666;">${materia.creditos} créditos</span>
+            // Calcular estadísticas
+            let totalCreditos = 0;
+            let materiasAprobadas = 0;
+            let todasNotas = [];
+            
+            estudiante.historial.forEach(sem => {
+                sem.materias.forEach(materia => {
+                    if (materia.estado === "Aprobado") {
+                        totalCreditos += materia.creditos;
+                        materiasAprobadas++;
+                        todasNotas.push(materia.nota);
+                    }
+                });
+            });
+            
+            const promedioGeneral = todasNotas.length > 0 ? (todasNotas.reduce((a,b) => a+b, 0) / todasNotas.length).toFixed(1) : 0;
+            
+            // Generar HTML del historial
+            let historialHTML = '';
+            estudiante.historial.forEach(sem => {
+                let materiasHTML = '';
+                sem.materias.forEach(materia => {
+                    let estadoClass = materia.estado === "Aprobado" ? "estado-aprobado" : (materia.estado === "Reprobado" ? "estado-reprobado" : "estado-curso");
+                    let notaColor = materia.nota >= 85 ? "nota-buena" : (materia.nota >= 70 ? "nota-regular" : "nota-mala");
+                    
+                    materiasHTML += `
+                        <div class="materia-item">
+                            <span>📖 ${materia.nombre}</span>
+                            <div style="text-align: right;">
+                                <span class="${notaColor}"><strong>${materia.nota}</strong> pts</span>
+                                <span class="${estadoClass}" style="margin-left: 15px;">${materia.estado}</span>
+                                <span style="margin-left: 10px; font-size: 12px; color: #666;">${materia.creditos} créditos</span>
+                            </div>
+                        </div>
+                    `;
+                });
+                
+                historialHTML += `
+                    <div class="semestre-card">
+                        <div class="semestre-header">
+                            <strong>📚 ${sem.semestre}° Semestre</strong>
+                            <span class="periodo">${sem.periodo}</span>
+                        </div>
+                        <div class="materias-list">
+                            ${materiasHTML}
+                        </div>
+                    </div>
+                `;
+            });
+            
+            resultsDiv.innerHTML = `
+                <div class="student-card">
+                    <div class="student-header">
+                        <h3>🎓 ${estudiante.nombre}</h3>
+                        <div class="student-id">Carnet: ${estudiante.carnet}</div>
+                    </div>
+                    <div class="student-info">
+                        <div class="record-section">
+                            <h4>📊 RÉCORD ACADÉMICO</h4>
+                            <div class="record-grid">
+                                <div class="record-item">
+                                    <div class="record-icon">📚</div>
+                                    <div class="record-value">${estudiante.semestre_actual}°</div>
+                                    <div class="record-label">Semestre Actual</div>
+                                </div>
+                                <div class="record-item">
+                                    <div class="record-icon">✅</div>
+                                    <div class="record-value">${materiasAprobadas}</div>
+                                    <div class="record-label">Materias Aprobadas</div>
+                                </div>
+                                <div class="record-item">
+                                    <div class="record-icon">📖</div>
+                                    <div class="record-value">${estudiante.materias_reprobadas || 0}</div>
+                                    <div class="record-label">Materias Reprobadas</div>
+                                </div>
+                                <div class="record-item">
+                                    <div class="record-icon">🎯</div>
+                                    <div class="record-value">${promedioGeneral}</div>
+                                    <div class="record-label">Promedio General</div>
+                                </div>
+                                <div class="record-item">
+                                    <div class="record-icon">💳</div>
+                                    <div class="record-value">${totalCreditos}</div>
+                                    <div class="record-label">Créditos Aprobados</div>
+                                </div>
+                                <div class="record-item">
+                                    <div class="record-icon">📈</div>
+                                    <div class="record-value">${Math.round(totalCreditos / (estudiante.semestre_actual * 20) * 100)}%</div>
+                                    <div class="record-label">Progreso Curricular</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="historial-section">
+                            <h4>📜 HISTORIAL ACADÉMICO POR SEMESTRE</h4>
+                            ${historialHTML}
+                        </div>
+                        
+                        <small style="display: block; margin-top: 20px; text-align: center; color: #888;">
+                            ☁️ Datos desde la nube · Sistema certificado ISO 27001<br>
+                            🔒 Información académica verificada y segura
+                        </small>
                     </div>
                 </div>
             `;
-        });
-        
-        historialHTML += `
-            <div class="semestre-card">
-                <div class="semestre-header">
-                    <strong>📚 ${sem.semestre}° Semestre</strong>
-                    <span class="periodo">${sem.periodo}</span>
-                </div>
-                <div class="materias-list">
-                    ${materiasHTML}
-                </div>
-            </div>
-        `;
-    });
-    
-    resultsDiv.innerHTML = `
-        <div class="student-card">
-            <div class="student-header">
-                <h3>🎓 ${estudiante.nombre}</h3>
-                <div class="student-id">Carnet: ${id}</div>
-            </div>
-            <div class="student-info">
-                
-                <!-- RÉCORD ACADÉMICO -->
-                <div class="record-section">
-                    <h4>📊 RÉCORD ACADÉMICO</h4>
-                    <div class="record-grid">
-                        <div class="record-item">
-                            <div class="record-icon">📚</div>
-                            <div class="record-value">${estudiante.semestre_actual}°</div>
-                            <div class="record-label">Semestre Actual</div>
-                        </div>
-                        <div class="record-item">
-                            <div class="record-icon">✅</div>
-                            <div class="record-value">${totalMateriasAprobadas}</div>
-                            <div class="record-label">Materias Aprobadas</div>
-                        </div>
-                        <div class="record-item">
-                            <div class="record-icon">📖</div>
-                            <div class="record-value">${estudiante.materias_reprobadas || 0}</div>
-                            <div class="record-label">Materias Reprobadas</div>
-                        </div>
-                        <div class="record-item">
-                            <div class="record-icon">🎯</div>
-                            <div class="record-value">${promedioGeneral}</div>
-                            <div class="record-label">Promedio General</div>
-                        </div>
-                        <div class="record-item">
-                            <div class="record-icon">💳</div>
-                            <div class="record-value">${totalCreditosAprobados}</div>
-                            <div class="record-label">Créditos Aprobados</div>
-                        </div>
-                        <div class="record-item">
-                            <div class="record-icon">📈</div>
-                            <div class="record-value">${(totalCreditosAprobados / (estudiante.semestre_actual * 20) * 100).toFixed(1)}%</div>
-                            <div class="record-label">Progreso curricular</div>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- HISTORIAL ACADÉMICO -->
-                <div class="historial-section">
-                    <h4>📜 HISTORIAL ACADÉMICO</h4>
-                    ${historialHTML}
-                </div>
-                
-                <small style="display: block; margin-top: 20px; text-align: center; color: #888;">
-                    ☁️ Datos desde la nube · Sistema certificado ISO 27001<br>
-                    🔒 Información académica verificada y segura
-                </small>
-            </div>
-        </div>
-    `;
-}
+        }
     </script>
 </body>
 </html>

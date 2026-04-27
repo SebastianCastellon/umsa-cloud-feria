@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel Admin - UMSA Cloud</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        .admin-container {
+            max-width: 800px;
+            margin: 30px auto;
+            padding: 20px;
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: bold;
+            color: #1a3e6f;
+        }
+        .form-group input, .form-group select {
+            width: 100%;
+            padding: 10px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+        .btn-primary {
+            background: #1a3e6f;
+            color: white;
+            padding: 12px 25px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            width: 100%;
+        }
+        .btn-primary:hover {
+            background: #0f2b4a;
+        }
+        .estudiante-card {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 15px;
+            margin: 15px 0;
+            border-left: 4px solid #c9a03d;
+        }
+        .success-message {
+            background: #d4edda;
+            color: #155724;
+            padding: 12px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+        .user-list {
+            margin-top: 30px;
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        .delete-btn {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 5px 12px;
+            border-radius: 5px;
+            cursor: pointer;
+            float: right;
+        }
+        .header-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        .back-btn {
+            background: #6c757d;
+            color: white;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container admin-container">
+        <div class="header-actions">
+            <a href="index.html" class="back-btn">← Volver al Sistema</a>
+            <h2>👑 Panel de Administración</h2>
+            <div style="width: 100px;"></div>
+        </div>
+        
+        <div class="card">
+            <h3>✚ Agregar Nuevo Estudiante</h3>
+            <p>Complete los datos del nuevo estudiante. Se guardará en el sistema.</p>
+            
+            <div id="successMsg" class="success-message">
+                ✅ Estudiante agregado exitosamente
+            </div>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label>👤 Usuario (nombre de inicio de sesión):</label>
+                    <input type="text" id="newUser" placeholder="Ej: juanperez" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>🔒 Contraseña:</label>
+                    <input type="text" id="newPass" placeholder="Ej: juan123" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>📛 Nombre completo:</label>
+                    <input type="text" id="newName" placeholder="Ej: Juan Perez Lopez" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>🆔 Carnet de Identidad:</label>
+                    <input type="text" id="newCarnet" placeholder="Ej: 1234567" required>
+                </div>
+                
+                <div class="form-group">
+                    <label>🎓 Carrera:</label>
+                    <input type="text" id="newCarrera" placeholder="Ej: Informática" value="Informática">
+                </div>
+                
+                <div class="form-group">
+                    <label>📊 Asistencia (%):</label>
+                    <input type="number" id="newAsistencia" placeholder="90" value="90">
+                </div>
+                
+                <div class="form-group">
+                    <label>📝 Notas (formato: materia=nota, separado por comas):</label>
+                    <input type="text" id="newNotas" placeholder="Ej: Informática=85, Programación=90, Matemáticas=78">
+                    <small style="color: #666;">Ejemplo: "Información en la Nube SIS-372=85, Programación=90, Bases de Datos=88"</small>
+                </div>
+                
+                <button type="submit" class="btn-primary">➕ Agregar Estudiante</button>
+            </form>
+        </div>
+        
+        <div class="card">
+            <h3>📋 Lista de Estudiantes Registrados</h3>
+            <div id="userList" class="user-list">
+                Cargando...
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Verificar sesión de admin
+        const session = JSON.parse(localStorage.getItem('umsa_session'));
+        if (!session || session.rol !== 'admin') {
+            alert('⚠️ Acceso no autorizado. Solo administradores.');
+            window.location.href = 'index.html';
+        }
+        
+        // Función para cargar y mostrar usuarios
+        function mostrarUsuarios() {
+            const usuarios = JSON.parse(localStorage.getItem('umsa_usuarios')) || {};
+            const listDiv = document.getElementById('userList');
+            
+            if (Object.keys(usuarios).length === 0) {
+                listDiv.innerHTML = '<p>No hay usuarios registrados</p>';
+                return;
+            }
+            
+            let html = '';
+            for (const [username, data] of Object.entries(usuarios)) {
+                const esAdmin = data.rol === 'admin';
+                html += `
+                    <div class="estudiante-card">
+                        <button class="delete-btn" onclick="eliminarUsuario('${username}')" ${esAdmin ? 'disabled style="background:#ccc;"' : ''}>🗑️ Eliminar</button>
+                        <strong>👤 ${username}</strong><br>
+                        📛 ${data.nombre}<br>
+                        🆔 ${data.carnet}<br>
+                        🎓 ${data.carrera || 'Informática'}<br>
+                        📊 Rol: ${data.rol === 'admin' ? '👑 Administrador' : '🎓 Estudiante'}<br>
+                        ${data.rol === 'estudiante' ? `<small>✅ Puede ingresar con usuario: ${username} y su contraseña</small>` : ''}
+                    </div>
+                `;
+            }
+            listDiv.innerHTML = html;
+        }
+        
+        // Función para eliminar usuario
+        function eliminarUsuario(username) {
+            if (confirm(`¿Eliminar al usuario "${username}"? Esta acción no se puede deshacer.`)) {
+                const usuarios = JSON.parse(localStorage.getItem('umsa_usuarios'));
+                delete usuarios[username];
+                localStorage.setItem('umsa_usuarios', JSON.stringify(usuarios));
+                mostrarUsuarios();
+                alert(`✅ Usuario ${username} eliminado`);
+            }
+        }
+        
+        // Función para agregar estudiante
+        document.getElementById('registerForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            
+            const newUser = document.getElementById('newUser').value.trim().toLowerCase();
+            const newPass = document.getElementById('newPass').value;
+            const newName = document.getElementById('newName').value.trim();
+            const newCarnet = document.getElementById('newCarnet').value.trim();
+            const newCarrera = document.getElementById('newCarrera').value.trim();
+            const newAsistencia = parseInt(document.getElementById('newAsistencia').value);
+            const newNotasStr = document.getElementById('newNotas').value;
+            
+            // Validaciones
+            if (!newUser || !newPass || !newName || !newCarnet) {
+                alert('❌ Completa todos los campos obligatorios');
+                return;
+            }
+            
+            const usuarios = JSON.parse(localStorage.getItem('umsa_usuarios'));
+            
+            if (usuarios[newUser]) {
+                alert('❌ El usuario ya existe. Elige otro nombre de usuario.');
+                return;
+            }
+            
+            // Procesar notas
+            const notas = {};
+            if (newNotasStr) {
+                const pares = newNotasStr.split(',');
+                pares.forEach(par => {
+                    const [materia, nota] = par.split('=');
+                    if (materia && nota) {
+                        notas[materia.trim()] = parseInt(nota);
+                    }
+                });
+            }
+            
+            // Si no se ingresaron notas, poner notas por defecto
+            if (Object.keys(notas).length === 0) {
+                notas["Información en la Nube SIS-372"] = 80;
+                notas["Programación Avanzada"] = 80;
+                notas["Bases de Datos"] = 80;
+            }
+            
+            // Crear nuevo estudiante
+            usuarios[newUser] = {
+                password: newPass,
+                nombre: newName,
+                rol: "estudiante",
+                carnet: newCarnet,
+                notas: notas,
+                asistencia: newAsistencia,
+                carrera: newCarrera
+            };
+            
+            localStorage.setItem('umsa_usuarios', JSON.stringify(usuarios));
+            
+            // Mostrar mensaje de éxito
+            const successMsg = document.getElementById('successMsg');
+            successMsg.style.display = 'block';
+            setTimeout(() => {
+                successMsg.style.display = 'none';
+            }, 3000);
+            
+            // Limpiar formulario
+            document.getElementById('newUser').value = '';
+            document.getElementById('newPass').value = '';
+            document.getElementById('newName').value = '';
+            document.getElementById('newCarnet').value = '';
+            document.getElementById('newNotas').value = '';
+            document.getElementById('newAsistencia').value = '90';
+            
+            // Actualizar lista
+            mostrarUsuarios();
+            
+            alert(`✅ Estudiante ${newName} registrado exitosamente!\n\nUsuario: ${newUser}\nContraseña: ${newPass}`);
+        });
+        
+        // Inicializar
+        mostrarUsuarios();
+    </script>
+</body>
+</html>

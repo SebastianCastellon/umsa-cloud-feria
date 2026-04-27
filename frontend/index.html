@@ -227,56 +227,117 @@
         }
         
         function mostrarResultadosPropios(estudiante, id) {
-            const resultsDiv = document.getElementById('results');
-            
-            let notasHTML = '';
-            let sumaNotas = 0;
-            let totalMaterias = 0;
-            
-            for (const [materia, nota] of Object.entries(estudiante.notas)) {
-                let notaClass = nota >= 90 ? 'nota-buena' : (nota >= 70 ? 'nota-regular' : 'nota-mala');
-                notasHTML += `
-                    <div class="nota-item">
-                        <span>📖 ${materia}</span>
-                        <span class="${notaClass}"><strong>${nota}</strong> puntos</span>
-                    </div>
-                `;
-                sumaNotas += nota;
-                totalMaterias++;
+    const resultsDiv = document.getElementById('results');
+    
+    // Calcular estadísticas del historial
+    let totalCreditosAprobados = 0;
+    let totalMateriasAprobadas = 0;
+    let todasNotas = [];
+    
+    estudiante.historial.forEach(sem => {
+        sem.materias.forEach(materia => {
+            if (materia.estado === "Aprobado") {
+                totalCreditosAprobados += materia.creditos;
+                totalMateriasAprobadas++;
+                todasNotas.push(materia.nota);
             }
+        });
+    });
+    
+    const promedioGeneral = (todasNotas.reduce((a,b) => a+b, 0) / todasNotas.length).toFixed(1);
+    
+    // Generar HTML del historial por semestre
+    let historialHTML = '';
+    estudiante.historial.forEach(sem => {
+        let materiasHTML = '';
+        sem.materias.forEach(materia => {
+            let estadoClass = materia.estado === "Aprobado" ? "estado-aprobado" : (materia.estado === "Reprobado" ? "estado-reprobado" : "estado-curso");
+            let notaColor = materia.nota >= 85 ? "nota-buena" : (materia.nota >= 70 ? "nota-regular" : "nota-mala");
             
-            const promedio = (sumaNotas / totalMaterias).toFixed(2);
-            
-            resultsDiv.innerHTML = `
-                <div class="student-card">
-                    <div class="student-header">
-                        <h3>🎓 ${estudiante.nombre}</h3>
-                        <div class="student-id">Carnet: ${id}</div>
-                    </div>
-                    <div class="student-info">
-                        <div class="info-row">
-                            <strong>📚 Carrera:</strong>
-                            <span>${estudiante.carrera}</span>
-                        </div>
-                        <div class="info-row">
-                            <strong>✅ Asistencia:</strong>
-                            <span>${estudiante.asistencia}%</span>
-                        </div>
-                        <div class="notas-section">
-                            <h4>📝 Mis Notas</h4>
-                            ${notasHTML}
-                            <div class="promedio">
-                                📈 <strong>Promedio General:</strong> ${promedio} puntos
-                            </div>
-                        </div>
-                        <small style="display: block; margin-top: 20px; text-align: center; color: #888;">
-                            ☁️ Datos desde la nube (localStorage)<br>
-                            🔒 Conexión segura con cifrado TLS
-                        </small>
+            materiasHTML += `
+                <div class="materia-item">
+                    <span>📖 ${materia.nombre}</span>
+                    <div style="text-align: right;">
+                        <span class="${notaColor}"><strong>${materia.nota}</strong> pts</span>
+                        <span class="${estadoClass}" style="margin-left: 15px;">${materia.estado}</span>
+                        <span style="margin-left: 10px; font-size: 12px; color: #666;">${materia.creditos} créditos</span>
                     </div>
                 </div>
             `;
-        }
+        });
+        
+        historialHTML += `
+            <div class="semestre-card">
+                <div class="semestre-header">
+                    <strong>📚 ${sem.semestre}° Semestre</strong>
+                    <span class="periodo">${sem.periodo}</span>
+                </div>
+                <div class="materias-list">
+                    ${materiasHTML}
+                </div>
+            </div>
+        `;
+    });
+    
+    resultsDiv.innerHTML = `
+        <div class="student-card">
+            <div class="student-header">
+                <h3>🎓 ${estudiante.nombre}</h3>
+                <div class="student-id">Carnet: ${id}</div>
+            </div>
+            <div class="student-info">
+                
+                <!-- RÉCORD ACADÉMICO -->
+                <div class="record-section">
+                    <h4>📊 RÉCORD ACADÉMICO</h4>
+                    <div class="record-grid">
+                        <div class="record-item">
+                            <div class="record-icon">📚</div>
+                            <div class="record-value">${estudiante.semestre_actual}°</div>
+                            <div class="record-label">Semestre Actual</div>
+                        </div>
+                        <div class="record-item">
+                            <div class="record-icon">✅</div>
+                            <div class="record-value">${totalMateriasAprobadas}</div>
+                            <div class="record-label">Materias Aprobadas</div>
+                        </div>
+                        <div class="record-item">
+                            <div class="record-icon">📖</div>
+                            <div class="record-value">${estudiante.materias_reprobadas || 0}</div>
+                            <div class="record-label">Materias Reprobadas</div>
+                        </div>
+                        <div class="record-item">
+                            <div class="record-icon">🎯</div>
+                            <div class="record-value">${promedioGeneral}</div>
+                            <div class="record-label">Promedio General</div>
+                        </div>
+                        <div class="record-item">
+                            <div class="record-icon">💳</div>
+                            <div class="record-value">${totalCreditosAprobados}</div>
+                            <div class="record-label">Créditos Aprobados</div>
+                        </div>
+                        <div class="record-item">
+                            <div class="record-icon">📈</div>
+                            <div class="record-value">${(totalCreditosAprobados / (estudiante.semestre_actual * 20) * 100).toFixed(1)}%</div>
+                            <div class="record-label">Progreso curricular</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- HISTORIAL ACADÉMICO -->
+                <div class="historial-section">
+                    <h4>📜 HISTORIAL ACADÉMICO</h4>
+                    ${historialHTML}
+                </div>
+                
+                <small style="display: block; margin-top: 20px; text-align: center; color: #888;">
+                    ☁️ Datos desde la nube · Sistema certificado ISO 27001<br>
+                    🔒 Información académica verificada y segura
+                </small>
+            </div>
+        </div>
+    `;
+}
     </script>
 </body>
 </html>

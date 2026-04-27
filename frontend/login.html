@@ -162,57 +162,289 @@
         // ============================================
         
         function inicializarUsuarios() {
-            const usuariosGuardados = localStorage.getItem('umsa_usuarios');
-            
-            if (!usuariosGuardados) {
-                // Usuarios iniciales
-                const usuariosIniciales = {
-                    "sebastian": {
-                        password: "sebas123",
-                        nombre: "Sebastian Dennis Castellon Gutierrez",
-                        rol: "admin",
-                        carnet: "14153644",
-                        notas: {
-                            "Información en la Nube SIS-372": 95,
-                            "Programación Avanzada": 92,
-                            "Bases de Datos": 98,
-                            "Redes de Computadoras": 94
-                        },
-                        asistencia: 96,
-                        carrera: "Informática"
+    const usuariosGuardados = localStorage.getItem('umsa_usuarios');
+    
+    if (!usuariosGuardados) {
+        // Usuarios con historial académico completo
+        const usuariosIniciales = {
+            "sebastian": {
+                password: "sebas123",
+                nombre: "Sebastian Dennis Castellon Gutierrez",
+                rol: "admin",
+                carnet: "14153644",
+                // Datos académicos actuales
+                semestre_actual: 8,
+                creditos_aprobados: 180,
+                materias_aprobadas: 32,
+                materias_reprobadas: 2,
+                promedio_general: 86.5,
+                // Historial por semestre
+                historial: [
+                    {
+                        semestre: 1,
+                        periodo: "2021-1",
+                        materias: [
+                            { nombre: "Introducción a la Informática", nota: 85, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Matemática Básica", nota: 78, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Lenguaje y Comunicación", nota: 82, estado: "Aprobado", creditos: 3 },
+                            { nombre: "Metodología de Estudio", nota: 90, estado: "Aprobado", creditos: 2 }
+                        ]
                     },
-                    "abigail": {
-                        password: "abigail123",
-                        nombre: "Abigail Marcia Goytia Aquise",
-                        rol: "estudiante",
-                        carnet: "10018381",
-                        notas: {
-                            "Información en la Nube SIS-372": 92,
-                            "Programación Avanzada": 88,
-                            "Bases de Datos": 95,
-                            "Redes de Computadoras": 90
-                        },
-                        asistencia: 95,
-                        carrera: "Informática"
+                    {
+                        semestre: 2,
+                        periodo: "2021-2",
+                        materias: [
+                            { nombre: "Programación I", nota: 88, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Álgebra Lineal", nota: 75, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Física Básica", nota: 70, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Inglés Técnico", nota: 85, estado: "Aprobado", creditos: 3 }
+                        ]
                     },
-                    "beymar": {
-                        password: "beymar123",
-                        nombre: "Beymar Jorge Apaza Carpio",
-                        rol: "estudiante",
-                        carnet: "0000000",
-                        notas: {
-                            "Información en la Nube SIS-372": 89,
-                            "Programación Avanzada": 91,
-                            "Bases de Datos": 87,
-                            "Redes de Computadoras": 88
-                        },
-                        asistencia: 91,
-                        carrera: "Informática"
+                    {
+                        semestre: 3,
+                        periodo: "2022-1",
+                        materias: [
+                            { nombre: "Programación II", nota: 92, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Estructura de Datos", nota: 88, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Cálculo I", nota: 68, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Electrónica Básica", nota: 75, estado: "Aprobado", creditos: 3 }
+                        ]
+                    },
+                    {
+                        semestre: 4,
+                        periodo: "2022-2",
+                        materias: [
+                            { nombre: "Bases de Datos I", nota: 95, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Sistemas Operativos", nota: 85, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Cálculo II", nota: 65, estado: "Reprobado", creditos: 4 },
+                            { nombre: "Estadística", nota: 80, estado: "Aprobado", creditos: 4 }
+                        ]
+                    },
+                    {
+                        semestre: 5,
+                        periodo: "2023-1",
+                        materias: [
+                            { nombre: "Bases de Datos II", nota: 92, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Ingeniería de Software", nota: 88, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Redes de Computadoras", nota: 94, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Cálculo II", nota: 82, estado: "Aprobado", creditos: 4 }
+                        ]
+                    },
+                    {
+                        semestre: 6,
+                        periodo: "2023-2",
+                        materias: [
+                            { nombre: "Programación Web", nota: 96, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Inteligencia Artificial", nota: 90, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Metodología de la Investigación", nota: 85, estado: "Aprobado", creditos: 3 },
+                            { nombre: "Emprendimiento", nota: 88, estado: "Aprobado", creditos: 3 }
+                        ]
+                    },
+                    {
+                        semestre: 7,
+                        periodo: "2024-1",
+                        materias: [
+                            { nombre: "Aplicaciones Móviles", nota: 94, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Seguridad Informática", nota: 89, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Computación en la Nube", nota: 95, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Ética Profesional", nota: 92, estado: "Aprobado", creditos: 2 }
+                        ]
+                    },
+                    {
+                        semestre: 8,
+                        periodo: "2024-2",
+                        materias: [
+                            { nombre: "Información en la Nube SIS-372", nota: 95, estado: "En curso", creditos: 4 },
+                            { nombre: "Programación Avanzada", nota: 92, estado: "En curso", creditos: 5 },
+                            { nombre: "Bases de Datos", nota: 98, estado: "En curso", creditos: 5 },
+                            { nombre: "Redes de Computadoras", nota: 94, estado: "En curso", creditos: 5 },
+                            { nombre: "Proyecto de Grado", nota: 0, estado: "En curso", creditos: 8 }
+                        ]
                     }
-                };
-                localStorage.setItem('umsa_usuarios', JSON.stringify(usuariosIniciales));
+                ]
+            },
+            "abigail": {
+                password: "abigail123",
+                nombre: "Abigail Marcia Goytia Aquise",
+                rol: "estudiante",
+                carnet: "10018381",
+                semestre_actual: 8,
+                creditos_aprobados: 175,
+                materias_aprobadas: 31,
+                materias_reprobadas: 1,
+                promedio_general: 89.2,
+                historial: [
+                    {
+                        semestre: 1,
+                        periodo: "2021-1",
+                        materias: [
+                            { nombre: "Introducción a la Informática", nota: 88, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Matemática Básica", nota: 82, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Lenguaje y Comunicación", nota: 90, estado: "Aprobado", creditos: 3 },
+                            { nombre: "Metodología de Estudio", nota: 92, estado: "Aprobado", creditos: 2 }
+                        ]
+                    },
+                    {
+                        semestre: 2,
+                        periodo: "2021-2",
+                        materias: [
+                            { nombre: "Programación I", nota: 91, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Álgebra Lineal", nota: 78, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Física Básica", nota: 85, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Inglés Técnico", nota: 88, estado: "Aprobado", creditos: 3 }
+                        ]
+                    },
+                    {
+                        semestre: 3,
+                        periodo: "2022-1",
+                        materias: [
+                            { nombre: "Programación II", nota: 95, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Estructura de Datos", nota: 92, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Cálculo I", nota: 80, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Electrónica Básica", nota: 78, estado: "Aprobado", creditos: 3 }
+                        ]
+                    },
+                    {
+                        semestre: 4,
+                        periodo: "2022-2",
+                        materias: [
+                            { nombre: "Bases de Datos I", nota: 96, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Sistemas Operativos", nota: 88, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Cálculo II", nota: 72, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Estadística", nota: 85, estado: "Aprobado", creditos: 4 }
+                        ]
+                    },
+                    {
+                        semestre: 5,
+                        periodo: "2023-1",
+                        materias: [
+                            { nombre: "Bases de Datos II", nota: 95, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Ingeniería de Software", nota: 90, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Redes de Computadoras", nota: 92, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Cálculo II", nota: 75, estado: "Aprobado", creditos: 4 } // Recuperó
+                        ]
+                    },
+                    {
+                        semestre: 6,
+                        periodo: "2023-2",
+                        materias: [
+                            { nombre: "Programación Web", nota: 98, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Inteligencia Artificial", nota: 92, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Metodología de la Investigación", nota: 88, estado: "Aprobado", creditos: 3 },
+                            { nombre: "Emprendimiento", nota: 90, estado: "Aprobado", creditos: 3 }
+                        ]
+                    },
+                    {
+                        semestre: 7,
+                        periodo: "2024-1",
+                        materias: [
+                            { nombre: "Aplicaciones Móviles", nota: 96, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Seguridad Informática", nota: 91, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Computación en la Nube", nota: 94, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Ética Profesional", nota: 93, estado: "Aprobado", creditos: 2 }
+                        ]
+                    },
+                    {
+                        semestre: 8,
+                        periodo: "2024-2",
+                        materias: [
+                            { nombre: "Información en la Nube SIS-372", nota: 92, estado: "En curso", creditos: 4 },
+                            { nombre: "Programación Avanzada", nota: 88, estado: "En curso", creditos: 5 },
+                            { nombre: "Bases de Datos", nota: 95, estado: "En curso", creditos: 5 },
+                            { nombre: "Redes de Computadoras", nota: 90, estado: "En curso", creditos: 5 },
+                            { nombre: "Proyecto de Grado", nota: 0, estado: "En curso", creditos: 8 }
+                        ]
+                    }
+                ]
+            },
+            "beymar": {
+                password: "beymar123",
+                nombre: "Beymar Jorge Apaza Carpio",
+                rol: "estudiante",
+                carnet: "0000000",
+                semestre_actual: 7,
+                creditos_aprobados: 165,
+                materias_aprobadas: 29,
+                materias_reprobadas: 3,
+                promedio_general: 84.3,
+                historial: [
+                    {
+                        semestre: 1,
+                        periodo: "2021-1",
+                        materias: [
+                            { nombre: "Introducción a la Informática", nota: 82, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Matemática Básica", nota: 75, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Lenguaje y Comunicación", nota: 80, estado: "Aprobado", creditos: 3 },
+                            { nombre: "Metodología de Estudio", nota: 85, estado: "Aprobado", creditos: 2 }
+                        ]
+                    },
+                    {
+                        semestre: 2,
+                        periodo: "2021-2",
+                        materias: [
+                            { nombre: "Programación I", nota: 88, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Álgebra Lineal", nota: 70, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Física Básica", nota: 68, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Inglés Técnico", nota: 82, estado: "Aprobado", creditos: 3 }
+                        ]
+                    },
+                    {
+                        semestre: 3,
+                        periodo: "2022-1",
+                        materias: [
+                            { nombre: "Programación II", nota: 90, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Estructura de Datos", nota: 85, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Cálculo I", nota: 62, estado: "Reprobado", creditos: 4 },
+                            { nombre: "Electrónica Básica", nota: 75, estado: "Aprobado", creditos: 3 }
+                        ]
+                    },
+                    {
+                        semestre: 4,
+                        periodo: "2022-2",
+                        materias: [
+                            { nombre: "Bases de Datos I", nota: 89, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Sistemas Operativos", nota: 82, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Cálculo I", nota: 78, estado: "Aprobado", creditos: 4 },
+                            { nombre: "Estadística", nota: 80, estado: "Aprobado", creditos: 4 }
+                        ]
+                    },
+                    {
+                        semestre: 5,
+                        periodo: "2023-1",
+                        materias: [
+                            { nombre: "Bases de Datos II", nota: 91, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Ingeniería de Software", nota: 86, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Redes de Computadoras", nota: 88, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Cálculo II", nota: 60, estado: "Reprobado", creditos: 4 }
+                        ]
+                    },
+                    {
+                        semestre: 6,
+                        periodo: "2023-2",
+                        materias: [
+                            { nombre: "Programación Web", nota: 92, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Inteligencia Artificial", nota: 87, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Metodología de la Investigación", nota: 85, estado: "Aprobado", creditos: 3 },
+                            { nombre: "Emprendimiento", nota: 84, estado: "Aprobado", creditos: 3 },
+                            { nombre: "Cálculo II", nota: 78, estado: "Aprobado", creditos: 4 }
+                        ]
+                    },
+                    {
+                        semestre: 7,
+                        periodo: "2024-1",
+                        materias: [
+                            { nombre: "Aplicaciones Móviles", nota: 90, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Seguridad Informática", nota: 85, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Computación en la Nube", nota: 89, estado: "Aprobado", creditos: 5 },
+                            { nombre: "Ética Profesional", nota: 88, estado: "Aprobado", creditos: 2 }
+                        ]
+                    }
+                ]
             }
-        }
+        };
+        localStorage.setItem('umsa_usuarios', JSON.stringify(usuariosIniciales));
+    }
+}
         
         // Ejecutar al cargar
         inicializarUsuarios();

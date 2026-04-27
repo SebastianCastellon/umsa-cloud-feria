@@ -1,26 +1,95 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>UMSA Cloud - Sistema Académico en la Nube</title>
-    <meta name="description" content="Sistema de gestión académica basado en computación en la nube con estándares ISO">
+    <title>UMSA Cloud - Sistema Académico</title>
+    <meta name="description" content="Sistema de gestión académica basado en computación en la nube">
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>☁️</text></svg>">
+    <style>
+        .user-bar {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .user-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex-wrap: wrap;
+        }
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            background: linear-gradient(135deg, #1a3e6f 0%, #0f2b4a 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 20px;
+        }
+        .user-details h3 {
+            margin: 0;
+            color: #1a3e6f;
+        }
+        .user-details p {
+            margin: 5px 0 0;
+            font-size: 12px;
+            color: #666;
+        }
+        .btn-logout {
+            background: #dc3545;
+            color: white;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: transform 0.2s;
+        }
+        .btn-logout:hover {
+            transform: translateY(-2px);
+        }
+        .btn-admin {
+            background: #c9a03d;
+            color: #1a3e6f;
+            border: none;
+            padding: 8px 20px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            text-decoration: none;
+            display: inline-block;
+        }
+        .welcome-section {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+    </style>
 </head>
 <body>
     <!-- Script de verificación de sesión -->
-<script>
-    // Verificar si el usuario ha iniciado sesión
-    const session = localStorage.getItem('umsa_session');
-    if (!session) {
-        window.location.href = 'login.html';
-    }
-    
-    const userData = JSON.parse(session);
-    console.log('✅ Usuario autenticado:', userData.nombre);
-</script>
+    <script>
+        // Verificar si hay sesión activa
+        const session = localStorage.getItem('umsa_session');
+        if (!session) {
+            window.location.href = 'login.html';
+        }
+        
+        const userData = JSON.parse(session);
+        console.log('✅ Usuario autenticado:', userData.nombre);
+        console.log('✅ Rol:', userData.rol);
+    </script>
+
     <!-- Header con logo UMSA -->
     <div class="header">
         <div class="header-content">
@@ -34,112 +103,180 @@
 
     <!-- Contenedor principal -->
     <div class="container">
-        <!-- Tarjeta de búsqueda -->
-        <div class="card search-card">
-            <div class="card-icon">🔍</div>
-            <h2>Consulta de Notas y Asistencia</h2>
-            <p class="card-description">Ingresa tu carnet de identidad para ver tu información académica</p>
+        <!-- Barra de usuario -->
+        <div class="user-bar">
+            <div class="user-info">
+                <div class="user-avatar">
+                    👤
+                </div>
+                <div class="user-details">
+                    <h3 id="userName"></h3>
+                    <p id="userRole"></p>
+                    <p id="userCarnet"></p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 10px;">
+                <a href="admin.html" id="adminLink" class="btn-admin" style="display: none;">👑 Panel Admin</a>
+                <button onclick="cerrarSesion()" class="btn-logout">🚪 Cerrar Sesión</button>
+            </div>
+        </div>
+
+        <script>
+            // Cargar datos del usuario
+            const sessionData = JSON.parse(localStorage.getItem('umsa_session'));
+            if (sessionData) {
+                document.getElementById('userName').textContent = sessionData.nombre;
+                document.getElementById('userRole').textContent = sessionData.rol === 'admin' ? '👑 Administrador' : '🎓 Estudiante';
+                document.getElementById('userCarnet').innerHTML = `📄 Carnet: ${sessionData.carnet}`;
+                
+                // Mostrar link de admin solo si es admin
+                if (sessionData.rol === 'admin') {
+                    document.getElementById('adminLink').style.display = 'inline-block';
+                }
+            }
             
-            <div class="search-container">
-                <input type="text" id="studentId" placeholder="Ejemplo: 10018381" autocomplete="off">
-                <button id="searchBtn" onclick="buscarEstudiante()">
-                    <span>🔍</span> Consultar
+            function cerrarSesion() {
+                localStorage.removeItem('umsa_session');
+                window.location.href = 'login.html';
+            }
+        </script>
+
+        <!-- Tarjeta de bienvenida personalizada -->
+        <div class="card welcome-section">
+            <h2>🎓 Bienvenido al Sistema Académico UMSA Cloud</h2>
+            <p>Consulta tus notas, asistencia y rendimiento académico en tiempo real desde la nube.</p>
+        </div>
+
+        <!-- Tarjeta de consulta (solo para estudiantes) -->
+        <div id="studentPanel" class="card search-card">
+            <div class="card-icon">🔍</div>
+            <h2>Consulta tus Notas</h2>
+            <p class="card-description">Tus datos académicos se cargan automáticamente desde la nube</p>
+            
+            <div style="text-align: center; margin-top: 20px;">
+                <button onclick="cargarMisNotas()" style="background: #1a3e6f; color:white; padding: 12px 30px; border:none; border-radius: 10px; cursor:pointer; font-size:16px;">
+                    📊 Ver mis notas
                 </button>
             </div>
-            
-            <div class="quick-links">
-                <span>Prueba rápida:</span>
-                <button class="quick-btn" onclick="probarEstudiante('10018381')">Abigail Goytia</button>
-                <button class="quick-btn" onclick="probarEstudiante('1794688')">Demo UMSA</button>
+        </div>
+
+        <!-- Panel de administración (solo visible para admin) -->
+        <div id="adminPanel" class="card" style="display: none;">
+            <h2>👑 Panel de Administración</h2>
+            <p>Gestiona los estudiantes del sistema</p>
+            <div style="margin-top: 20px;">
+                <a href="admin.html" style="background: #c9a03d; color:#1a3e6f; padding: 10px 20px; text-decoration: none; border-radius: 8px; font-weight: bold;">
+                    ✚ Ir a Gestión de Estudiantes
+                </a>
             </div>
         </div>
 
-        <!-- Resultados (se muestra después de buscar) -->
+        <!-- Resultados -->
         <div id="results" class="results" style="display: none;"></div>
-
-        <!-- Sección de arquitectura cloud -->
-        <div class="card architecture-card">
-            <h2>☁️ Arquitectura Cloud del Sistema</h2>
-            <div class="architecture-grid">
-                <div class="arch-item">
-                    <div class="arch-icon">🌐</div>
-                    <h3>Frontend</h3>
-                    <p>HTML5 + CSS3 + JavaScript<br>Desplegado en Vercel/Netlify<br>CDN Global</p>
-                </div>
-                <div class="arch-arrow">→</div>
-                <div class="arch-item">
-                    <div class="arch-icon">⚡</div>
-                    <h3>Backend API</h3>
-                    <p>Node.js + Express<br>Render Cloud (Gratis)<br>Rate Limiting + Helmet</p>
-                </div>
-                <div class="arch-arrow">→</div>
-                <div class="arch-item">
-                    <div class="arch-icon">🗄️</div>
-                    <h3>Base de Datos</h3>
-                    <p>Supabase PostgreSQL<br>500 MB Gratis<br>Backups Automáticos</p>
-                </div>
-            </div>
-        </div>
 
         <!-- Sección de seguridad ISO -->
         <div class="card iso-card">
             <h2>🛡️ Seguridad de la Información</h2>
             <p class="iso-subtitle">Estándares Internacionales Implementados</p>
             <div class="iso-grid" id="isoGrid">
-                <!-- Se carga dinámicamente desde la API -->
                 <div class="loading-spinner">Cargando certificaciones ISO...</div>
             </div>
-            <div class="security-badges">
-                <span class="badge">🔒 TLS 1.3</span>
-                <span class="badge">📊 Auditoría Continua</span>
-                <span class="badge">💾 Respaldos Diarios</span>
-                <span class="badge">🚫 Protección DDoS</span>
-            </div>
         </div>
 
-        <!-- Ventajas y desventajas -->
-        <div class="card proscons">
-            <h2>📊 Análisis Cloud para la UMSA</h2>
-            <div class="proscons-grid">
-                <div class="pros">
-                    <h3>✅ Ventajas</h3>
-                    <ul>
-                        <li>Acceso desde cualquier lugar</li>
-                        <li>Escalabilidad bajo demanda</li>
-                        <li>Reducción de costos de infraestructura</li>
-                        <li>Actualizaciones automáticas</li>
-                        <li>Alta disponibilidad (99.9%)</li>
-                    </ul>
-                </div>
-                <div class="cons">
-                    <h3>⚠️ Consideraciones</h3>
-                    <ul>
-                        <li>Dependencia de Internet</li>
-                        <li>Soberanía de datos (región Brasil)</li>
-                        <li>Curva de aprendizaje</li>
-                        <li>Vendor lock-in mitigable</li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-
-        <!-- Footer con información del proyecto -->
+        <!-- Footer -->
         <div class="footer">
             <div class="footer-content">
                 <div>
                     <strong>📋 Información en la Nube - SIS 372</strong><br>
-                    Estudiante: Goytia Aquise Abigail Marcia · CI: 10018381<br>
+                    Estudiantes: Abigail Goytia · Sebastian Castellon · Beymar Apaza<br>
                     Docente: Lic. José María Tapia Baltazar · Abril, 2026
-                </div>
-                <div class="footer-links">
-                    <span>🏛️ Universidad Mayor de San Andrés</span>
-                    <span>⚜️ Facultad de Ciencias Puras y Naturales</span>
-                    <span>💻 Carrera de Informática</span>
                 </div>
             </div>
         </div>
     </div>
 
     <script src="script.js"></script>
+    
+    <script>
+        // Mostrar/ocultar paneles según rol
+        if (sessionData && sessionData.rol === 'admin') {
+            document.getElementById('adminPanel').style.display = 'block';
+            document.getElementById('studentPanel').style.display = 'none';
+        } else {
+            document.getElementById('adminPanel').style.display = 'none';
+            document.getElementById('studentPanel').style.display = 'block';
+        }
+        
+        // Función para cargar notas del estudiante logueado
+        async function cargarMisNotas() {
+            const resultsDiv = document.getElementById('results');
+            resultsDiv.style.display = 'block';
+            resultsDiv.innerHTML = `<div class="loading-spinner">🔄 Cargando tus notas desde la nube...</div>`;
+            
+            // Simular carga de datos (usando datos de la sesión)
+            setTimeout(() => {
+                const estudiante = {
+                    nombre: sessionData.nombre,
+                    carrera: sessionData.carrera || "Informática",
+                    asistencia: sessionData.asistencia || 90,
+                    notas: sessionData.notas || {}
+                };
+                
+                mostrarResultadosPropios(estudiante, sessionData.carnet);
+            }, 500);
+        }
+        
+        function mostrarResultadosPropios(estudiante, id) {
+            const resultsDiv = document.getElementById('results');
+            
+            let notasHTML = '';
+            let sumaNotas = 0;
+            let totalMaterias = 0;
+            
+            for (const [materia, nota] of Object.entries(estudiante.notas)) {
+                let notaClass = nota >= 90 ? 'nota-buena' : (nota >= 70 ? 'nota-regular' : 'nota-mala');
+                notasHTML += `
+                    <div class="nota-item">
+                        <span>📖 ${materia}</span>
+                        <span class="${notaClass}"><strong>${nota}</strong> puntos</span>
+                    </div>
+                `;
+                sumaNotas += nota;
+                totalMaterias++;
+            }
+            
+            const promedio = (sumaNotas / totalMaterias).toFixed(2);
+            
+            resultsDiv.innerHTML = `
+                <div class="student-card">
+                    <div class="student-header">
+                        <h3>🎓 ${estudiante.nombre}</h3>
+                        <div class="student-id">Carnet: ${id}</div>
+                    </div>
+                    <div class="student-info">
+                        <div class="info-row">
+                            <strong>📚 Carrera:</strong>
+                            <span>${estudiante.carrera}</span>
+                        </div>
+                        <div class="info-row">
+                            <strong>✅ Asistencia:</strong>
+                            <span>${estudiante.asistencia}%</span>
+                        </div>
+                        <div class="notas-section">
+                            <h4>📝 Mis Notas</h4>
+                            ${notasHTML}
+                            <div class="promedio">
+                                📈 <strong>Promedio General:</strong> ${promedio} puntos
+                            </div>
+                        </div>
+                        <small style="display: block; margin-top: 20px; text-align: center; color: #888;">
+                            ☁️ Datos desde la nube (localStorage)<br>
+                            🔒 Conexión segura con cifrado TLS
+                        </small>
+                    </div>
+                </div>
+            `;
+        }
+    </script>
 </body>
 </html>

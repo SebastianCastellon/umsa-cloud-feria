@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sin conexión - UMSA Cloud</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            background: linear-gradient(135deg, #1a3e6f 0%, #0f2b4a 100%);
+            color: white;
+            text-align: center;
+        }
+        .offline-container {
+            padding: 20px;
+        }
+        .icon {
+            font-size: 80px;
+            margin-bottom: 20px;
+        }
+        h1 {
+            margin-bottom: 10px;
+        }
+        p {
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+        button {
+            background: #c9a03d;
+            color: #1a3e6f;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class="offline-container">
+        <div class="icon">📡</div>
+        <h1>Sin conexión a Internet</h1>
+        <p>No se pudo cargar la página.<br>Verifica tu conexión y vuelve a intentar.</p>
+        <button onclick="location.reload()">🔄 Reintentar</button>
+        <hr style="margin-top: 30px; opacity: 0.3;">
+        <small style="opacity: 0.7;">UMSA Cloud - Sistema Académico</small>
+    </div>
+</body>
+</html>

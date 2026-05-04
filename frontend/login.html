@@ -2,6 +2,13 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Escudo_UMSA.svg/1200px-Escudo_UMSA.svg.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="UMSA Cloud">
+<meta name="theme-color" content="#1a3e6f">
+<meta name="mobile-web-app-capable" content="yes">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - UMSA Cloud</title>
     <link rel="stylesheet" href="style.css">
@@ -483,5 +490,21 @@
             }
         });
     </script>
+    <script>
+    // Registrar Service Worker para PWA
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(reg => console.log('✅ Service Worker registrado:', reg.scope))
+                .catch(err => console.error('❌ Error SW:', err));
+        });
+    }
+    
+    // Detectar si la app se instaló
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        console.log('📱 La app se puede instalar');
+    });
+</script>
 </body>
 </html>

@@ -1,0 +1,20 @@
+{
+  "name": "UMSA Cloud Académico",
+  "short_name": "UMSA Cloud",
+  "description": "Sistema Académico UMSA en la Nube - Aplicaciones Web Cloud",
+  "start_url": "/login.html",
+  "scope": "/",
+  "display": "standalone",
+  "theme_color": "#1a3e6f",
+  "background_color": "#ffffff",
+  "orientation": "portrait",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Escudo_UMSA.svg/1200px-Escudo_UMSA.svg.png",
+      "sizes": "1200x1200",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

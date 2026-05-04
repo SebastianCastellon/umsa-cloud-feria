@@ -129,6 +129,21 @@
     </style>
 </head>
 <body>
+    <!-- Splash Screen para PWA -->
+<div class="splash-screen" id="splash">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/7/78/Escudo_UMSA.svg/1200px-Escudo_UMSA.svg.png" alt="UMSA">
+    <h2 style="color: white; margin-top: 20px;">UMSA Cloud</h2>
+    <p style="color: rgba(255,255,255,0.8);">Cargando...</p>
+</div>
+<script>
+    // Ocultar splash después de cargar
+    window.addEventListener('load', () => {
+        setTimeout(() => {
+            const splash = document.getElementById('splash');
+            if (splash) splash.style.display = 'none';
+        }, 1500);
+    });
+</script>
     <div class="login-container">
         <div class="login-card">
             <div class="login-logo">
